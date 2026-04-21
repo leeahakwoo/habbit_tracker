@@ -33,9 +33,35 @@
 ### 2. 백엔드 설계 (Supabase DB & Auth)
 
 #### [NEW] 데이터베이스 스키마 정의 (SQL)
-- `profiles`: 사용자 프로필 (id PK, username, avatar_url)
-- `habits`: 습관 정의 (id PK, user_id FK, name, frequency, goal_value)
-- `habit_logs`: 일별 기록 (id PK, habit_id FK, user_id FK, date, status['none', 'partial', 'completed'])
+
+**테이블 구조:**
+- **user_profiles**: `id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY` (1:1 관계)
+  - `avatar_url TEXT` - 프로필 이미지
+  - `bio TEXT` - 자기소개 (향후 소셜 기능 대비)
+  - `theme TEXT DEFAULT 'light'` - 다크모드 선택 저장
+  - `created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`
+  - `updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`
+
+- **habits**: `user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL` (1:N 관계)
+  - `id UUID PRIMARY KEY`
+  - `name TEXT NOT NULL` - 습관 이름
+  - `frequency TEXT NOT NULL` - 'daily' | 'weekly' (향후 확장 가능)
+  - `goal_value INTEGER DEFAULT 1` - 목표 횟수
+  - `created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`
+  - `updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`
+
+- **habit_logs**: 습관별 일일 기록 데이터 (명시적 user_id 저장으로 쿼리 최적화)
+  - `id UUID PRIMARY KEY`
+  - `habit_id UUID REFERENCES habits(id) ON DELETE CASCADE NOT NULL`
+  - `user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL`
+  - `date DATE NOT NULL`
+  - `status TEXT DEFAULT 'none'` - 'none' | 'partial' | 'completed'
+  - `created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`
+  - `UNIQUE(habit_id, date)` - 하루에 한 습관 1개 기록만 가능
+
+**보안:**
+- **RLS (Row Level Security)**: 모든 테이블에 본인 데이터만 접근 가능한 보안 정책 적용
+- 각 테이블별로 `auth.uid() == user_id` 조건으로 필터링
 
 #### [NEW] 인증 시스템 (Authentication)
 - Supabase Auth를 사용한 이메일/비밀번호 로그인 구현
