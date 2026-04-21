@@ -11,18 +11,17 @@
 
 ## Proposed Changes
 
-### 1. 프로젝트 초기화 및 기술 스택 설정
+### 1. 프로젝트 초기화 및 기술 스택 설정 [DONE]
 
-#### [NEW] Next.js 템플릿 프로젝트 생성 및 Git 설정
+#### [DONE] Next.js 템플릿 프로젝트 생성 및 Git 설정
 - `npx create-next-app@latest ./ --tailwind --eslint --app --src-dir`
-- **Git 설정**:
-  - `git init`
-  - `git remote add origin https://github.com/leeahakwoo/habbit_tracker.git`
-- **폴더 구조**:
-  - `/src/app`: 라우팅 및 페이지 컴포넌트
-  - `/src/components`: 재사용 가능한 UI 컴포넌트
-  - `/src/lib/supabase`: Supabase 클라이언트 설정 (Client/Server/Middleware)
-  - `/src/types`: TypeScript 인터페이스 정의
+- **Git 설정**: 완료 (Origin 연결 및 Initial Push 완료)
+- **폴더 구조**: 실제 구현된 구조 반영
+  - `/src/app/auth`: 인증 관련 페이지 (로그인, 가입, 콜백)
+  - `/src/app/dashboard`: 메인 대시보드 및 습관 관리 레이아웃
+  - `/src/app/actions`: 서버 액션 처리 (auth, habits)
+  - `/src/lib/supabase`: Supabase 클라이언트 설정 및 미들웨어
+  - `/src/types`: `database.ts` 타입 정의 및 인터페이스
 
 #### [NEW] [tailwind.config.ts](file:///c:/Users/cherr/OneDrive/%EB%B0%94%ED%83%95%20%ED%99%94%EB%A9%B4/habbit/tailwind.config.ts)
 - PRD의 프리미엄 룩을 위한 커스텀 컬러 팔레트 정의 (Primary, Secondary, Accent)
@@ -30,7 +29,7 @@
 
 ---
 
-### 2. 백엔드 설계 (Supabase DB & Auth)
+### 2. 백엔드 설계 및 인증 [DONE]
 
 #### [NEW] 데이터베이스 스키마 정의 (SQL)
 
@@ -63,25 +62,22 @@
 - **RLS (Row Level Security)**: 모든 테이블에 본인 데이터만 접근 가능한 보안 정책 적용
 - 각 테이블별로 `auth.uid() == user_id` 조건으로 필터링
 
-#### [NEW] 인증 시스템 (Authentication)
-- Supabase Auth를 사용한 이메일/비밀번호 로그인 구현
-- Next.js Middleware를 활용한 보호된 라우트(Protected Routes) 설정
+#### [DONE] 인증 시스템 (Authentication)
+- Supabase Auth를 사용한 이메일/비밀번호 로그인 구현 완료
+- Next.js Middleware를 활용한 보호된 라우트(Protected Routes) 설정 완료
 
 ---
 
-### 3. 기능별 구현 단계 (Features)
+### 3. 기능별 구현 상태 (Features)
 
-#### 페이즈 1: 인증 및 초기 UI
-- 로그인/회원가입 페이지 구현
-- 메인 레이아웃 및 내비게이션 바 구축
+#### 페이즈 1 & 2: 인증 및 초기 UI [DONE]
+- 로그인/회원가입/로그아웃 서버 액션 및 UI 페이지 완벽 구현
+- 대시보드 레이아웃 및 내비게이션 바 구축 완료
 
-#### 페이즈 2: 습관 관리 (CRUD)
-- 습관 생성 모달 및 목록 조회
-- 서버 액션(Server Actions)을 활용한 Supabase 데이터 연동
-
-#### 페이즈 3: 습관 기록 및 통계
-- 일별 습관 완료 체크 (부분 성공 포함) 구현
-- 스트릭(Streak) 및 달성률 시각화 (Tailwind 활용)
+#### 페이즈 3: 습관 관리 및 기록 [DONE]
+- 습관 생성, 조회, 수정, 삭제(CRUD) 서버 액션 구현 완료
+- 대시보드 내 습관 목록 렌더링 및 일별 기록 토글(none/partial/completed) 기능 구현 완료
+- 스트릭(Streak) 계산 로직 완료
 
 ---
 
